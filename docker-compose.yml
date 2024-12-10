@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # PHP Apache service
+  web:
+    build: .
+    container_name: student-management-crud  # Check for spelling consistency
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db                 # Database hostname (container name)
+      DB_PORT: 3306               # Database port (default MySQL port)
+      DB_NAME: ${DB_NAME}         # Database name from .env file
+      DB_USER: ${DB_USER}         # Database user from .env file
+      DB_PASSWORD: ${DB_PASSWORD} # Database password from .env file
+
+  # MySQL Database service
+  db:
+    image: mysql:8.1.0
+    container_name: student-management-db  # Check for spelling consistency
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}   # MySQL root password
+      MYSQL_DATABASE: ${DB_NAME}            # Database name
+      MYSQL_USER: ${DB_USER}                # MySQL user
+      MYSQL_PASSWORD: ${DB_PASSWORD}        # MySQL user password
+    ports:
+      - "3306:3306"   # Expose MySQL port
+    volumes:
+      - db_data:/var/lib/mysql  # Persistent storage for MySQL data
+
+# Volumes for persistent data
+volumes:
+  db_data:
+
